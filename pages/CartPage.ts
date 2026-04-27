@@ -3,6 +3,10 @@ import { Page, expect } from "@playwright/test";
 export class CartPage { 
 
    constructor(private page: Page) {}
+ 
+ async startCheckout() {
+        await this.page.locator('[data-test="checkout"]').click();      
+    }
 
    getCartItems() {
       return this.page.locator('.cart_item');
@@ -35,4 +39,7 @@ export class CartPage {
 async continueShopping() {
   await this.getContinueShoppingButton().click();
 }
+
+
+
 }

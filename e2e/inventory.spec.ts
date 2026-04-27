@@ -6,6 +6,8 @@ test('usuario ve productos del login', async ({ loginPage, page }) => {
   await loginPage.goto();
   await loginPage.login('standard_user', 'secret_sauce');
 
+  await expect(page).toHaveURL(/inventory/);
+
   const inventoryPage = new InventoryPage(page);
   await inventoryPage.expectItemsVisible();
 });

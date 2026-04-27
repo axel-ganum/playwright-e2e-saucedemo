@@ -5,15 +5,17 @@ import { InventoryPage } from "../pages/InventoryPage";
 
 
 
-test('priducto agregado aparece en el carrito', async ({ loginPage, page }) => {
+test('producto agregado aparece en el carrito', async ({ loginPage, page }) => {
   await loginPage.goto();
-  await loginPage.login('standard_user ', 'secret_sauce');
+  await loginPage.login('standard_user', 'secret_sauce');
 
   const inventoryPage = new InventoryPage(page);
   const cartPage = new CartPage(page);
   
     await inventoryPage.addItemToCartByName('sauce-labs-backpack');
     await inventoryPage.openCart();
+
+    await expect(page).toHaveURL(/cart/);
 
     await cartPage.expectItemCount(1);
   
@@ -22,11 +24,13 @@ test('priducto agregado aparece en el carrito', async ({ loginPage, page }) => {
 
 test('producto agregado tiene nombre correcto en el carrito', async ({ loginPage, page }) => {
   await loginPage.goto();
-  await loginPage.login('standard_user ', 'secret_sauce');
+  await loginPage.login('standard_user', 'secret_sauce');
 
   const inventoryPage = new InventoryPage(page);
   const cartPage = new CartPage(page);
   
+   await expect(page).toHaveURL(/inventory/);
+
     await inventoryPage.addItemToCartByName('sauce-labs-backpack');
     await inventoryPage.openCart();
 
@@ -36,10 +40,13 @@ test('producto agregado tiene nombre correcto en el carrito', async ({ loginPage
 
 test('usuario elimina producto del carrito', async ({ loginPage, page }) => {
   await loginPage.goto();
-  await loginPage.login('standard_user ', 'secret_sauce');
+  await loginPage.login('standard_user', 'secret_sauce');
 
   const inventoryPage = new InventoryPage(page);
   const cartPage = new CartPage(page);
+
+   console.log('URL antes de agregar:', await page.url());
+   await expect(page).toHaveURL(/inventory/);
   
     await inventoryPage.addItemToCartByName('sauce-labs-backpack');
     await inventoryPage.openCart();
@@ -51,7 +58,7 @@ test('usuario elimina producto del carrito', async ({ loginPage, page }) => {
 
 test('usuario vuelve a inventory desde carrito', async ({ loginPage, page }) => {
   await loginPage.goto();
-  await loginPage.login('standard_user ', 'secret_sauce');
+  await loginPage.login('standard_user', 'secret_sauce');
 
   const inventoryPage = new InventoryPage(page);
   const cartPage = new CartPage(page);

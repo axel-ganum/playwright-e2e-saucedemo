@@ -1,9 +1,9 @@
 import { Page, expect } from "@playwright/test";
 
 export class InventoryPage {
-    getCartBadge(): any {
-        throw new Error("Method not implemented.");
-    }
+   getCartBadge() {
+    return this.page.locator('.shopping_cart_badge');
+}
     addToCartButtons: any;
     static addFirstItemToCart() {
         throw new Error("Method not implemented.");
@@ -38,7 +38,12 @@ async addFirstItemToCart() {
     }
 
     async addItemToCartByName(name: string) {
-        await this.page.locator(`[data-test="add-to-cart-${name}"]`).click();
+
+        const button = this.page.locator(`[data-test="add-to-cart-${name}"]`);
+
+
+        await expect(button).toBeVisible();     
+        await button.click();
     }
 
 }
