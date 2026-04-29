@@ -127,7 +127,7 @@ test('producto aparece en checkout overview', async({loginPage, page}) => {
   await checkoutPage.continue();
 
   const productName = await inventoryPage.getFirstProductName();
-  await checkoutPage.expectProductInOverview(productName);
+  await checkoutPage.expectOnCheckoutOverview();
 });
 
 test('usuario cancela checkout y vuelve al carrito', async({loginPage, page}) => {

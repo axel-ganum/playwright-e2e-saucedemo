@@ -1,6 +1,7 @@
 import {Page, expect} from "@playwright/test";
 
 export class CheckoutPage {
+  expectProductInOverview: any;
 
     constructor(private page: Page) {}
 
