@@ -1,9 +1,7 @@
 import { Page, expect } from "@playwright/test";
 
 export class CartPage {
-  expectOnCartPage() {
-    throw new Error('Method not implemented.');
-  } 
+
 
    constructor(private page: Page) {}
  
@@ -35,13 +33,17 @@ export class CartPage {
       await expect(this.page.locator('.inventory_item_name', { hasText: name })).toBeVisible();
    }
 
-   getContinueShoppingButton() {
-  return this.page.locator('#continue-shopping');
-}
+   async expectOnCartPage() {
+      await expect(this.page).toHaveURL(/cart/);
+   }
 
-async continueShopping() {
-  await this.getContinueShoppingButton().click();
-}
+   getContinueShoppingButton() {
+      return this.page.locator('#continue-shopping');
+   }
+
+   async continueShopping() {
+      await this.getContinueShoppingButton().click();
+   }
 
 
 

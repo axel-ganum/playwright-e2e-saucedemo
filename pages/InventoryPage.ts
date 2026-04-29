@@ -1,9 +1,9 @@
 import { Page, expect } from "@playwright/test";
 
 export class InventoryPage {
-  getFirstProductName() {
-    throw new Error('Method not implemented.');
-  }
+ getFirstProductName() {
+  return this.page.locator('.inventory_item_name').first();
+}
    getCartBadge() {
     return this.page.locator('.shopping_cart_badge');
 }

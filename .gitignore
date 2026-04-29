@@ -1,0 +1,40 @@
+# Node modules
+node_modules/
+
+# Playwright test results and reports
+test-results/
+playwright-report/
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# VSCode settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+*.lcov
+
+# IDE files
+.idea/
+*.swp
+
+# npm/yarn debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Output folders
+dist/
+build/
+
+# Misc
+*.tgz
+*.zip
+*.tar
