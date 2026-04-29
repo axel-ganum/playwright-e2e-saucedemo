@@ -1,6 +1,9 @@
 import { Page, expect } from "@playwright/test";
 
-export class CartPage { 
+export class CartPage {
+  expectOnCartPage() {
+    throw new Error('Method not implemented.');
+  } 
 
    constructor(private page: Page) {}
  

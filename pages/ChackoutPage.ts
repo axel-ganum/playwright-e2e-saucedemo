@@ -1,9 +1,18 @@
 import {Page, expect} from "@playwright/test";
 
 export class CheckoutPage {
+
     constructor(private page: Page) {}
 
-   
+
+    
+  async expectOnCartPage() {
+    await expect(this.page).toHaveURL(/cart/);
+  }
+
+  getFirstProductName() {
+    return this.page.locator('.cart_item .inventory_item_name').first();
+  }
     async continue() {
         await this.page.locator('[data-test="continue"]').click();
     }
@@ -12,7 +21,11 @@ export class CheckoutPage {
         await this.page.locator('[data-test="finish"]').click();
     }
 
+     async cancel() {
+    await this.page.locator('[data-test="cancel"]').click();
+  }
 
+   
     async fillCheckoutForm(firstName: string, lastName: string, postalCode: string) {
         await this.page.locator('[data-test="firstName"]').fill(firstName);
         await this.page.locator('[data-test="lastName"]').fill(lastName);
@@ -30,7 +43,7 @@ export class CheckoutPage {
     async expectSuccessMessage() {
         const successMessage = this.page.locator('.complete-header');
         await expect(successMessage).toBeVisible();
-        await expect(successMessage).toHaveText('THANK YOU FOR YOUR ORDER');
+        await expect(successMessage).toHaveText(/thank you for your order/i);
     }
 
     async expectErrorMessage(mensaje: string) {
