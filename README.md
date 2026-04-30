@@ -1,6 +1,10 @@
 # QA Automation E2E – SauceDemo (Playwright)
 
-[![Playwright Tests](https://github.com/TU-USUARIO/TU-REPO/actions/workflows/playwright.yml/badge.svg)](https://github.com/TU-USUARIO/TU-REPO/actions)
+[![Playwright Tests](https://github.com/axel-ganum/Owner avatar
+playwright-e2e-saucedemo
+/actions/workflows/playwright.yml/badge.svg)](https://github.com/axel-ganum/Owner avatar
+playwright-e2e-saucedemo
+/actions)
 
 ## Overview
 Proyecto de automatización end-to-end (E2E) para un flujo completo de compra en SauceDemo, utilizando Playwright con TypeScript y aplicando el patrón Page Object Model (POM).
