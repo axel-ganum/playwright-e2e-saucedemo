@@ -3,7 +3,7 @@ import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/ChackoutPage';
 import { InventoryPage } from '../pages/InventoryPage';
 
-test('usario inicia checkout', async({loginPage, page}) => {
+test('usuario inicia checkout', async({loginPage, page}) => {
   await loginPage.goto();
   await loginPage.login('standard_user', 'secret_sauce'); 
 
@@ -111,7 +111,7 @@ test('error si falta postal code', async({loginPage, page}) => {
   await checkoutPage.expectErrorMessage('Error: Postal Code is required');
 }); 
 
-test('producto aparece en checkout overview', async({loginPage, page}) => {
+test('producto aparece en checkout overview', async ({ loginPage, page }) => {
   await loginPage.goto();
   await loginPage.login('standard_user', 'secret_sauce');
 
@@ -120,14 +120,17 @@ test('producto aparece en checkout overview', async({loginPage, page}) => {
   const checkoutPage = new CheckoutPage(page);
 
   await inventoryPage.addFirstItemToCart();
-  await inventoryPage.openCart();
 
+  const productName = await inventoryPage.getFirstProductName();
+
+  await inventoryPage.openCart();
   await cartPage.startCheckout();
+
   await checkoutPage.fillCheckoutForm('John', 'Doe', '12345');
   await checkoutPage.continue();
 
-  const productName = await inventoryPage.getFirstProductName();
   await checkoutPage.expectOnCheckoutOverview();
+  await checkoutPage.expectProductInOverview(productName);
 });
 
 test('usuario cancela checkout y vuelve al carrito', async({loginPage, page}) => {

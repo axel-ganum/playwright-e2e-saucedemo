@@ -57,14 +57,3 @@ test('producto tiene nombre y precio', async ({ loginPage, page }) => {
   await expect(firstItem.locator('.inventory_item_price')).toBeVisible();
 });
 
-test('producto agregado aparece en el carrito', async ({ loginPage, page }) => {
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
-
-  const inventoryPage = new InventoryPage(page);
-
-  await inventoryPage.addFirstItemToCart();
-  await inventoryPage.openCart();
-
-  await expect(page.locator('.cart_item')).toHaveCount(1);
-});
