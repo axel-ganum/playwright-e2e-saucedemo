@@ -121,7 +121,7 @@ test('producto aparece en checkout overview', async ({ loginPage, page }) => {
 
   await inventoryPage.addFirstItemToCart();
 
-  const productName = await inventoryPage.getFirstProductName();
+  const productName = await inventoryPage.getFirstProductName().innerText();
 
   await inventoryPage.openCart();
   await cartPage.startCheckout();

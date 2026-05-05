@@ -1,61 +1,66 @@
-import {Page, expect} from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 
 export class CheckoutPage {
-  expectProductInOverview: any;
+  constructor(private page: Page) {}
 
-    constructor(private page: Page) {}
+  // 🔹 LOCATORS / GETTERS
+  getFirstProductName() {
+    return this.page.locator('.cart_item .inventory_item_name').first();
+  }
 
+  getProductByName(name: string) {
+    return this.page.locator('.inventory_item_name', { hasText: name });
+  }
 
-    
+  // 🔹 ACTIONS
+  async continue() {
+    await this.page.locator('[data-test="continue"]').click();
+  }
+
+  async finish() {
+    await this.page.locator('[data-test="finish"]').click();
+  }
+
+  async cancel() {
+    await this.page.locator('[data-test="cancel"]').click();
+  }
+
+  async fillCheckoutForm(firstName: string, lastName: string, postalCode: string) {
+    await this.page.locator('[data-test="firstName"]').fill(firstName);
+    await this.page.locator('[data-test="lastName"]').fill(lastName);
+    await this.page.locator('[data-test="postalCode"]').fill(postalCode);
+  }
+
+  // 🔹 ASSERTIONS
   async expectOnCartPage() {
     await expect(this.page).toHaveURL(/cart/);
   }
 
-  getFirstProductName() {
-    return this.page.locator('.cart_item .inventory_item_name').first();
-  }
-    async continue() {
-        await this.page.locator('[data-test="continue"]').click();
-    }
-
-    async finish() {
-        await this.page.locator('[data-test="finish"]').click();
-    }
-
-     async cancel() {
-    await this.page.locator('[data-test="cancel"]').click();
+  async expectOnCheckoutStepOne() {
+    await expect(this.page).toHaveURL(/checkout-step-one/);
   }
 
-   
-    async fillCheckoutForm(firstName: string, lastName: string, postalCode: string) {
-        await this.page.locator('[data-test="firstName"]').fill(firstName);
-        await this.page.locator('[data-test="lastName"]').fill(lastName);
-        await this.page.locator('[data-test="postalCode"]').fill(postalCode);
-    }
+  async expectOnCheckoutOverview() {
+    await expect(this.page).toHaveURL(/checkout-step-two/);
+  }
 
-    async expectOnCheckoutStepOne() {
-        await expect(this.page).toHaveURL(/.*checkout-step-one/);   
-    }
+  async expectProductInOverview(productName: string) {
+    await expect(this.getProductByName(productName)).toBeVisible();
+  }
 
-    async expectOnCheckoutOverview() {
-        await expect(this.page).toHaveURL(/.*checkout-step-two/);   
-    }
+  async expectItemVisible(name: string) {
+    await expect(this.getProductByName(name)).toBeVisible();
+  }
 
-    async expectSuccessMessage() {
-        const successMessage = this.page.locator('.complete-header');
-        await expect(successMessage).toBeVisible();
-        await expect(successMessage).toHaveText(/thank you for your order/i);
-    }
+  async expectSuccessMessage() {
+    const successMessage = this.page.locator('.complete-header');
+    await expect(successMessage).toBeVisible();
+    await expect(successMessage).toHaveText(/thank you for your order/i);
+  }
 
-    async expectErrorMessage(mensaje: string) {
-        const error = this.page.locator('[data-test="error"]');
-        await expect(error).toBeVisible();
-        await expect(error).toContainText(mensaje);
-    }   
-
-    async expectItemVisible(name: string) {
-        const item = this.page.locator('.inventory_item_name', { hasText: name });
-        await expect(item).toBeVisible();
-    }
-
+  async expectErrorMessage(message: string) {
+    const error = this.page.locator('[data-test="error"]');
+    await expect(error).toBeVisible();
+    await expect(error).toContainText(message);
+  }
 }
