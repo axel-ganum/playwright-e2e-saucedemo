@@ -21,6 +21,33 @@ El objetivo es validar los principales flujos de negocio de un e-commerce, asegu
 
 ## Test Coverage
 
+...
+### End-to-End
+- Flujo completo: login → selección de producto → checkout → confirmación
+
+---
+
+## Test Strategy
+
+La automatización prioriza los flujos críticos del e-commerce, enfocándose en escenarios de mayor impacto para el usuario:
+
+- autenticación
+- gestión de carrito
+- checkout
+- finalización de compra
+
+Se incluyen validaciones positivas y negativas para garantizar el comportamiento esperado tanto en flujos exitosos como ante errores de usuario.
+
+Los tests fueron diseñados para ser:
+
+- independientes
+- reutilizables
+- mantenibles
+- resistentes a flakiness
+
+---
+
+
 ### Autenticación
 - Login con credenciales válidas
 - Validación de errores en login
@@ -101,8 +128,25 @@ npx playwright test --debug
 
 ---
 
+## Negative Testing
+
+La suite incluye escenarios negativos para validar el comportamiento de la aplicación ante entradas inválidas y errores de usuario:
+
+- Login inválido
+- Checkout incompleto
+- Validación de campos obligatorios
+- Restricción de avance con datos faltantes
+
+---
+
 ## CI/CD
 Integración con GitHub Actions para ejecutar tests automáticamente en cada push y pull request.
+
+Pipeline:
+- Instalación de dependencias
+- Instalación de browsers
+- Ejecución de tests
+- Generación de reportes
 
 ---
 
