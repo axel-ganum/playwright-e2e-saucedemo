@@ -125,7 +125,9 @@ npx playwright test --debug
 - Manejo correcto de asincronía
 - Validación de UI y lógica de negocio
 - Reducción de flakiness
-
+- Screenshots automáticos en fallos
+- Videos automáticos en fallos
+- Trace Viewer para debugging
 ---
 
 ## Negative Testing
