@@ -2,7 +2,7 @@ import { test } from '../fixtures/testBase';
 import { goToCheckout } from '../utils/flows';
 
 import { CartPage } from '../pages/CartPage';
-import { CheckoutPage } from '../pages/ChackoutPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
 import { InventoryPage } from '../pages/InventoryPage';
 
 test.describe('Checkout', () => {
