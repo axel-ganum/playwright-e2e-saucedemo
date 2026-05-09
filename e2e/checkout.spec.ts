@@ -1,170 +1,119 @@
-import {test} from '../fixtures/testBase';
+import { test } from '../fixtures/testBase';
+import { goToCheckout } from '../utils/flows';
+
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/ChackoutPage';
 import { InventoryPage } from '../pages/InventoryPage';
 
-test('usuario inicia checkout', async({loginPage, page}) => {
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce'); 
+test.describe('Checkout', () => {
 
-  const inventoryPage = new InventoryPage(page);
-  const cartPage = new CartPage(page);
-  const checkoutPage = new CheckoutPage(page);
+  test('usuario inicia checkout', async ({ page }) => {
+    await goToCheckout(page);
 
-  await inventoryPage.addFirstItemToCart();
-  await inventoryPage.openCart();
+    const checkoutPage = new CheckoutPage(page);
 
-  await cartPage.startCheckout();
-  await checkoutPage.expectOnCheckoutStepOne();
-})
+    await checkoutPage.expectOnCheckoutStepOne();
+  });
 
-test('usuario completa datos y continua al overview', async({loginPage, page}) => {
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  test('usuario completa datos y continua al overview', async ({ page }) => {
+    await goToCheckout(page);
 
- const inventoryPage = new InventoryPage(page);
- const cartPage = new CartPage(page);
- const checkoutPage = new CheckoutPage(page);
+    const checkoutPage = new CheckoutPage(page);
 
- await inventoryPage.addFirstItemToCart();
- await inventoryPage.openCart();
+    await checkoutPage.fillCheckoutForm('John', 'Doe', '12345');
+    await checkoutPage.continue();
 
- await cartPage.startCheckout();
- await checkoutPage.fillCheckoutForm('John', 'Doe', '12345');
- await checkoutPage.continue();
- 
- await checkoutPage.expectOnCheckoutOverview();
- });
+    await checkoutPage.expectOnCheckoutOverview();
+  });
 
- test('usuario finaliza compra con exito', async({loginPage, page}) => {
-   await loginPage.goto();
-   await loginPage.login('standard_user', 'secret_sauce');
+  test('usuario finaliza compra con exito', async ({ page }) => {
+    await goToCheckout(page);
 
-   const inventoryPage = new InventoryPage(page);
-   const cartPage = new CartPage(page);
-   const checkoutPage = new CheckoutPage(page);
+    const checkoutPage = new CheckoutPage(page);
 
-   await inventoryPage.addFirstItemToCart();
-   await inventoryPage.openCart();
+    await checkoutPage.fillCheckoutForm('John', 'Doe', '12345');
+    await checkoutPage.continue();
 
-   await cartPage.startCheckout();
-   await checkoutPage.fillCheckoutForm('John', 'Doe', '12345');
-   await checkoutPage.continue();
+    await checkoutPage.expectOnCheckoutOverview();
 
-   await checkoutPage.expectOnCheckoutOverview();
+    await checkoutPage.finish();
 
-   await checkoutPage.finish();
-   await checkoutPage.expectSuccessMessage();
- });
+    await checkoutPage.expectSuccessMessage();
+  });
 
- test('error si falta first name', async({loginPage, page}) => {
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  test('error si falta first name', async ({ page }) => {
+    await goToCheckout(page);
 
-  const inventoryPage = new InventoryPage(page);
-  const cartPage = new CartPage(page);
-  const checkoutPage = new CheckoutPage(page);
+    const checkoutPage = new CheckoutPage(page);
 
-  await inventoryPage.addFirstItemToCart();
-  await inventoryPage.openCart();
+    await checkoutPage.fillCheckoutForm('', 'Doe', '12345');
+    await checkoutPage.continue();
 
-  await cartPage.startCheckout();
-  await checkoutPage.fillCheckoutForm('', 'Doe', '12345');
-  await checkoutPage.continue();
+    await checkoutPage.expectErrorMessage('Error: First Name is required');
+  });
 
-  await checkoutPage.expectErrorMessage('Error: First Name is required');
+  test('error si falta last name', async ({ page }) => {
+    await goToCheckout(page);
+
+    const checkoutPage = new CheckoutPage(page);
+
+    await checkoutPage.fillCheckoutForm('John', '', '12345');
+    await checkoutPage.continue();
+
+    await checkoutPage.expectErrorMessage('Error: Last Name is required');
+  });
+
+  test('error si falta postal code', async ({ page }) => {
+    await goToCheckout(page);
+
+    const checkoutPage = new CheckoutPage(page);
+
+    await checkoutPage.fillCheckoutForm('John', 'Doe', '');
+    await checkoutPage.continue();
+
+    await checkoutPage.expectErrorMessage('Error: Postal Code is required');
+  });
+
+  test('producto aparece en checkout overview', async ({ page }) => {
+    await goToCheckout(page);
+
+    const inventoryPage = new InventoryPage(page);
+    const checkoutPage = new CheckoutPage(page);
+
+    const productName = await inventoryPage
+      .getFirstProductName()
+      .innerText();
+
+    await checkoutPage.fillCheckoutForm('John', 'Doe', '12345');
+    await checkoutPage.continue();
+
+    await checkoutPage.expectOnCheckoutOverview();
+
+    await checkoutPage.expectProductInOverview(productName);
+  });
+
+  test('usuario cancela checkout y vuelve al carrito', async ({ page }) => {
+    await goToCheckout(page);
+
+    const cartPage = new CartPage(page);
+    const checkoutPage = new CheckoutPage(page);
+
+    await checkoutPage.cancel();
+
+    await cartPage.expectOnCartPage();
+  });
+
+  test('usuario completa compra end to end', async ({ page }) => {
+    await goToCheckout(page);
+
+    const checkoutPage = new CheckoutPage(page);
+
+    await checkoutPage.fillCheckoutForm('John', 'Doe', '12345');
+    await checkoutPage.continue();
+
+    await checkoutPage.finish();
+
+    await checkoutPage.expectSuccessMessage();
+  });
+
 });
-
-test('error si falta last name', async({loginPage, page}) => {
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
-
-  const inventoryPage = new InventoryPage(page);
-  const cartPage = new CartPage(page);
-  const checkoutPage = new CheckoutPage(page);
-
-  await inventoryPage.addFirstItemToCart();
-  await inventoryPage.openCart();
-
-  await cartPage.startCheckout();
-  await checkoutPage.fillCheckoutForm('John', '', '12345');
-  await checkoutPage.continue();
-
-  await checkoutPage.expectErrorMessage('Error: Last Name is required');
-});
-
-test('error si falta postal code', async({loginPage, page}) => {
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
-
-  const inventoryPage = new InventoryPage(page);
-  const cartPage = new CartPage(page);
-  const checkoutPage = new CheckoutPage(page);
-
-  await inventoryPage.addFirstItemToCart();
-  await inventoryPage.openCart();
-
-  await cartPage.startCheckout();
-  await checkoutPage.fillCheckoutForm('John', 'Doe', '');
-  await checkoutPage.continue();
-
-  await checkoutPage.expectErrorMessage('Error: Postal Code is required');
-}); 
-
-test('producto aparece en checkout overview', async ({ loginPage, page }) => {
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
-
-  const inventoryPage = new InventoryPage(page);
-  const cartPage = new CartPage(page);
-  const checkoutPage = new CheckoutPage(page);
-
-  await inventoryPage.addFirstItemToCart();
-
-  const productName = await inventoryPage.getFirstProductName().innerText();
-
-  await inventoryPage.openCart();
-  await cartPage.startCheckout();
-
-  await checkoutPage.fillCheckoutForm('John', 'Doe', '12345');
-  await checkoutPage.continue();
-
-  await checkoutPage.expectOnCheckoutOverview();
-  await checkoutPage.expectProductInOverview(productName);
-});
-
-test('usuario cancela checkout y vuelve al carrito', async({loginPage, page}) => {
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
-  
-  const inventoryPage = new InventoryPage(page);
-  const cartPage = new CartPage(page);
-  const checkoutPage = new CheckoutPage(page); 
-
-  await inventoryPage.addFirstItemToCart();
-  await inventoryPage.openCart();
-
-  await cartPage.startCheckout();
-  await checkoutPage.cancel();
-
-  await cartPage.expectOnCartPage();
-}); 
-
-test('usuario completa compra end to end', async({loginPage, page}) => {
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
-
-  const inventoryPage = new InventoryPage(page);
-  const cartPage = new CartPage(page);
-  const checkoutPage = new CheckoutPage(page);
-
-  await inventoryPage.addFirstItemToCart();
-  await inventoryPage.openCart();
-
-  await cartPage.startCheckout();
-  await checkoutPage.fillCheckoutForm('John', 'Doe', '12345');
-  await checkoutPage.continue();
-  await checkoutPage.finish();
-
-  await checkoutPage.expectSuccessMessage();
-}); 
